@@ -5,15 +5,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build WDA unsigned
+      - name: Build WDA
         run: |
           xcodebuild build-for-testing -scheme WebDriverAgentRunner -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO
-          cd build/Release-iphoneos
           mkdir -p Payload
-          mv WebDriverAgentRunner-Runner.app Payload/
-          zip -r WebDriverAgentRunner-Runner.ipa Payload
+          cp -r build/Release-iphoneos/WebDriverAgentRunner-Runner.app Payload/
+          zip -r WDA.ipa Payload
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: WDA-unsigned
-          path: build/Release-iphoneos/WebDriverAgentRunner-Runner.ipa
+          path: WDA.ipa
