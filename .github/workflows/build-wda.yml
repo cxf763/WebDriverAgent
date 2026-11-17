@@ -43,6 +43,11 @@ jobs:
           # 顶层 Frameworks 的 XCTest 依赖，装到设备上会优先用 DeveloperDiskImage 里的。
           rm -rf Payload/WebDriverAgentRunner-Runner.app/Frameworks
 
+          # Xcode 会把 .xctest 的 .dSYM 一起塞进 PlugIns，里面是 MH_DSYM 类型的
+          # 调试文件，ldid 遇到会报 "Unsupported Mach-O type"（TrollStore 里就是
+          # Install Error 175）。IPA 里不需要调试符号，直接删掉。
+          find Payload -name '*.dSYM' -type d -prune -exec rm -rf {} +
+
           zip -qry WDA.ipa Payload
 
       - name: Upload IPA
